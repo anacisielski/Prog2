@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, redirect,
+from flask import Flask, render_template, request, session, redirect
 
 app=Flask(__name__)
+
+app.config["SECRET_KEY"] = "camelo"
 
 class Pessoa:
     def __init__(self,nome,endereco,telefone):
@@ -28,6 +30,10 @@ def listar_pessoas():
 def inserir_pessoas():
     return render_template("form_inserir_pessoa.html")  
 
+@app.route("/alterar_pessoas")
+def alterar_pessoas():
+    return render_template("form_alterar_pessoa.html")  
+
 @app.route("/exibir_mensagem")
 def exibir_mensagem():
     return render_template("exibir_mensagem.html")
@@ -52,23 +58,24 @@ def excluir():
         lista_de_pessoas.remove(achou)
     return listar_pessoas()
 
-@app.route("/form_alterar_pessoa")
-def form_alterar_pessoa():
-	procurado = request.args.get("nome")
-	for pe in pessoas:
-		if pe.nome == procurado:
-			return render_template("form_alterar_pessoa.html", informacoes=pe)  
-	return "nao achei: " +procurado
+@app.route("/login")
+def login():
+    login = request.args.get("login")
+    senha = request.args.get("senha")
+    if login == "Ana" and senha == "123":
+        session["usuario"] = login
+        return redirect("/")
+    else:
+        return "login/senha inválidos"
 
-@app.route("/alterar_pessoa")
-def alterar_pessoa():
-	procurado = request.args.get("nome_original")
-	nome= request.args.get("nome")
-	endereco= request.args.get("endereco")
-	telefone= request.args.get("telefone")
-	fenix= Pessoa (nome, endereco, telefone)
-	for i in range (len(pessoas)):
-		if pessoas [i].nome == procurado:
-			pessoas [i] == fenix
-			return redirect ("/listar_pessoas")
-	return "erro" +procurado
+@app.route("/form_login")
+def form_login():
+   return render_template("form_login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.pop("usuario")
+    return redirect("/")
+    
+app.run()

@@ -1,0 +1,18 @@
+<html lang="pt-br" >
+    <head>
+        <meta charset="utf-8">
+        <title>Inserir Pessoa</title>    
+    </head>
+    <body>
+        <form action="/cadastrar_pessoa">
+            Nome: <input type="text" name="nome"><br>
+            Endereço: <textarea name = endereco> </textarea>
+            <input type="submit" value="salvar">
+        </form>
+         {%if session ["usuario"]%}
+                <a href="/logout">Logout</a>
+            {%else%}
+                <a href="/form_login">Login</a>
+        {%endif%} 
+    </body>
+</html>
